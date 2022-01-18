@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Žemėlapis ERDB</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/Trees_1.js"></script>
+        <script src="data/FarmFields_2.js"></script>
+        <script src="data/Residences_3.js"></script>
+        <script src="data/Lakes_4.js"></script>
+        <script src="data/Road_5.js"></script>
+        <script src="data/PostBoxes_6.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.bindPopup(Object.keys(highlightLayer.feature.properties).map(function(k) { return '<h3>' + k + ": " + highlightLayer.feature.properties[k] + '</h3>' }).join(""));
+        }
+      var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[24.042754532685287,54.446051372626876],[24.049517356220655,54.45641246806705]]);
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OSM contributors'
+}).addTo(map)
+
+function onMapClick(e) {
+    var popup = L.popup()
+    popup
+        .setLatLng(e.latlng)
+        .setContent("Gaunama oro informacija")
+        .openOn(map);
+
+    fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + e.latlng.lng + '&lon=' + e.latlng.lat + '&appid=134c379c7ae600ae9be14acedade3faf')
+        .then(r => r.json()) 
+        .then(data => { 
+            // Change this line to show exactly the info you need
+            popup.setContent("Šalis: " + data.sys.country + ", miestas: " + data.name + ", temperatūra: " + (data.main.temp -273.15).toFixed(0) + " C, vėjo greitis: " + data.wind.speed + " m/s, drėgnumas: " + data.main.humidity + "%, slėgis: " + data.main.pressure + " hPa.")
+            console.log('https://api.openweathermap.org/data/2.5/weather?lat=' + e.latlng.lng + '&lon=' + e.latlng.lat + '&appid=134c379c7ae600ae9be14acedade3faf')
+        })
+}
+
+map.on('click', onMapClick)
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_Map_0');
+        map.getPane('pane_Map_0').style.zIndex = 400;
+        var img_Map_0 = 'data/Map_0.png';
+        var img_bounds_Map_0 = [[24.042920119270324,54.44600179559522],[24.04901572695002,54.456580735656026]];
+        var layer_Map_0 = new L.imageOverlay(img_Map_0,
+                                              img_bounds_Map_0,
+                                              {pane: 'pane_Map_0'});
+        bounds_group.addLayer(layer_Map_0);
+        map.addLayer(layer_Map_0);
+        function pop_Trees_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Trees_1_0() {
+            return {
+                pane: 'pane_Trees_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(133,182,111,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Trees_1');
+        map.getPane('pane_Trees_1').style.zIndex = 401;
+        map.getPane('pane_Trees_1').style['mix-blend-mode'] = 'normal';
+        var layer_Trees_1 = new L.geoJson(json_Trees_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Trees_1',
+            layerName: 'layer_Trees_1',
+            pane: 'pane_Trees_1',
+            onEachFeature: pop_Trees_1,
+            style: style_Trees_1_0,
+        });
+        bounds_group.addLayer(layer_Trees_1);
+        map.addLayer(layer_Trees_1);
+        function pop_FarmFields_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_FarmFields_2_0() {
+            return {
+                pane: 'pane_FarmFields_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(133,105,2,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_FarmFields_2');
+        map.getPane('pane_FarmFields_2').style.zIndex = 402;
+        map.getPane('pane_FarmFields_2').style['mix-blend-mode'] = 'normal';
+        var layer_FarmFields_2 = new L.geoJson(json_FarmFields_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_FarmFields_2',
+            layerName: 'layer_FarmFields_2',
+            pane: 'pane_FarmFields_2',
+            onEachFeature: pop_FarmFields_2,
+            style: style_FarmFields_2_0,
+        });
+        bounds_group.addLayer(layer_FarmFields_2);
+        map.addLayer(layer_FarmFields_2);
+        function pop_Residences_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Residences_3_0() {
+            return {
+                pane: 'pane_Residences_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(152,125,183,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Residences_3');
+        map.getPane('pane_Residences_3').style.zIndex = 403;
+        map.getPane('pane_Residences_3').style['mix-blend-mode'] = 'normal';
+        var layer_Residences_3 = new L.geoJson(json_Residences_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Residences_3',
+            layerName: 'layer_Residences_3',
+            pane: 'pane_Residences_3',
+            onEachFeature: pop_Residences_3,
+            style: style_Residences_3_0,
+        });
+        bounds_group.addLayer(layer_Residences_3);
+        map.addLayer(layer_Residences_3);
+        function pop_Lakes_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Lakes_4_0() {
+            return {
+                pane: 'pane_Lakes_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(45,95,145,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Lakes_4');
+        map.getPane('pane_Lakes_4').style.zIndex = 404;
+        map.getPane('pane_Lakes_4').style['mix-blend-mode'] = 'normal';
+        var layer_Lakes_4 = new L.geoJson(json_Lakes_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Lakes_4',
+            layerName: 'layer_Lakes_4',
+            pane: 'pane_Lakes_4',
+            onEachFeature: pop_Lakes_4,
+            style: style_Lakes_4_0,
+        });
+        bounds_group.addLayer(layer_Lakes_4);
+        map.addLayer(layer_Lakes_4);
+        function pop_Road_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Road_5_0() {
+            return {
+                pane: 'pane_Road_5',
+                opacity: 1,
+                color: 'rgba(231,189,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 5.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Road_5');
+        map.getPane('pane_Road_5').style.zIndex = 405;
+        map.getPane('pane_Road_5').style['mix-blend-mode'] = 'normal';
+        var layer_Road_5 = new L.geoJson(json_Road_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Road_5',
+            layerName: 'layer_Road_5',
+            pane: 'pane_Road_5',
+            onEachFeature: pop_Road_5,
+            style: style_Road_5_0,
+        });
+        bounds_group.addLayer(layer_Road_5);
+        map.addLayer(layer_Road_5);
+        function pop_PostBoxes_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_PostBoxes_6_0() {
+            return {
+                pane: 'pane_PostBoxes_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,182,54,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_PostBoxes_6');
+        map.getPane('pane_PostBoxes_6').style.zIndex = 406;
+        map.getPane('pane_PostBoxes_6').style['mix-blend-mode'] = 'normal';
+        var layer_PostBoxes_6 = new L.geoJson(json_PostBoxes_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PostBoxes_6',
+            layerName: 'layer_PostBoxes_6',
+            pane: 'pane_PostBoxes_6',
+            onEachFeature: pop_PostBoxes_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_PostBoxes_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PostBoxes_6);
+        map.addLayer(layer_PostBoxes_6);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/PostBoxes_6.png" /> PostBoxes': layer_PostBoxes_6,'<img src="legend/Road_5.png" /> Road': layer_Road_5,'<img src="legend/Lakes_4.png" /> Lakes': layer_Lakes_4,'<img src="legend/Residences_3.png" /> Residences': layer_Residences_3,'<img src="legend/FarmFields_2.png" /> FarmFields': layer_FarmFields_2,'<img src="legend/Trees_1.png" /> Trees': layer_Trees_1,"Map": layer_Map_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_Residences_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['ResidenceN'] !== null?String('<div style="color: #ffffff; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['ResidenceN']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Residences_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_Lakes_4.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['LakeName'] !== null?String('<div style="color: #ffffff; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['LakeName']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Lakes_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"TreeArea": "int","FarmFieldA": "int","ResidenceN": "str","LakeName": "str","PostCode": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+        var i = 0;
+        layer_Residences_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['ResidenceN'] !== null?String('<div style="color: #ffffff; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['ResidenceN']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Residences_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_Lakes_4.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['LakeName'] !== null?String('<div style="color: #ffffff; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['LakeName']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Lakes_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_TreeArea = document.createElement("div");
+            div_TreeArea.id = "div_TreeArea";
+            div_TreeArea.className = "slider";
+            document.getElementById("menu").appendChild(div_TreeArea);
+            var lab_TreeArea = document.createElement('div');
+            lab_TreeArea.innerHTML  = 'Filter by tree field area: <span id="val_TreeArea"></span>';
+            lab_TreeArea.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_TreeArea);
+            var reset_TreeArea = document.createElement('div');
+            reset_TreeArea.innerHTML = 'clear filter';
+            reset_TreeArea.className = 'filterlabel';
+            lab_TreeArea.className = 'filterlabel';
+            reset_TreeArea.onclick = function() {
+                sel_TreeArea.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_TreeArea);
+            var sel_TreeArea = document.getElementById('div_TreeArea');
+            noUiSlider.create(sel_TreeArea, {
+                connect: true,
+                start: [511, 16074],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 511,
+                max: 16074
+                }
+            });
+            sel_TreeArea.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_TreeArea = document.getElementById('val_TreeArea');
+            val_TreeArea.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_FarmFieldA = document.createElement("div");
+            div_FarmFieldA.id = "div_FarmFieldA";
+            div_FarmFieldA.className = "slider";
+            document.getElementById("menu").appendChild(div_FarmFieldA);
+            var lab_FarmFieldA = document.createElement('div');
+            lab_FarmFieldA.innerHTML  = 'Filter by farm field area: <span id="val_FarmFieldA"></span>';
+            lab_FarmFieldA.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_FarmFieldA);
+            var reset_FarmFieldA = document.createElement('div');
+            reset_FarmFieldA.innerHTML = 'clear filter';
+            reset_FarmFieldA.className = 'filterlabel';
+            lab_FarmFieldA.className = 'filterlabel';
+            reset_FarmFieldA.onclick = function() {
+                sel_FarmFieldA.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_FarmFieldA);
+            var sel_FarmFieldA = document.getElementById('div_FarmFieldA');
+            noUiSlider.create(sel_FarmFieldA, {
+                connect: true,
+                start: [822, 34971],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 822,
+                max: 34971
+                }
+            });
+            sel_FarmFieldA.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_FarmFieldA = document.getElementById('val_FarmFieldA');
+            val_FarmFieldA.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ResidenceN = document.createElement('div');
+            div_ResidenceN.id = "div_ResidenceN";
+            div_ResidenceN.className= "filterselect";
+            document.getElementById("menu").appendChild(div_ResidenceN);
+            sel_ResidenceN = document.createElement('select');
+            sel_ResidenceN.multiple = true;
+            sel_ResidenceN.size = 10;
+            sel_ResidenceN.id = "sel_ResidenceN";
+            var ResidenceN_options_str = "<option value='' unselected></option>";
+            sel_ResidenceN.onchange = function(){filterFunc()};
+            ResidenceN_options_str  += '<option value="Algirdų namas">Algirdų namas</option>';
+            ResidenceN_options_str  += '<option value="Andriaus namas">Andriaus namas</option>';
+            ResidenceN_options_str  += '<option value="Braškevičių namas">Braškevičių namas</option>';
+            ResidenceN_options_str  += '<option value="Dangiro namas">Dangiro namas</option>';
+            ResidenceN_options_str  += '<option value="Dobilų namas">Dobilų namas</option>';
+            ResidenceN_options_str  += '<option value="Dumauskų namas">Dumauskų namas</option>';
+            ResidenceN_options_str  += '<option value="Geručių namas">Geručių namas</option>';
+            ResidenceN_options_str  += '<option value="Giedraičių namas">Giedraičių namas</option>';
+            ResidenceN_options_str  += '<option value="Katinų namas">Katinų namas</option>';
+            ResidenceN_options_str  += '<option value="Linų namas">Linų namas</option>';
+            ResidenceN_options_str  += '<option value="Marijonų namas">Marijonų namas</option>';
+            ResidenceN_options_str  += '<option value="Mielių namas">Mielių namas</option>';
+            ResidenceN_options_str  += '<option value="Paulauskų namas">Paulauskų namas</option>';
+            ResidenceN_options_str  += '<option value="Radvilų namas">Radvilų namas</option>';
+            ResidenceN_options_str  += '<option value="Smetonų namas">Smetonų namas</option>';
+            ResidenceN_options_str  += '<option value="Stankevičių namas">Stankevičių namas</option>';
+            ResidenceN_options_str  += '<option value="Tautvydo namas">Tautvydo namas</option>';
+            ResidenceN_options_str  += '<option value="Vengrų namas">Vengrų namas</option>';
+            ResidenceN_options_str  += '<option value="Vytautų namas">Vytautų namas</option>';
+            ResidenceN_options_str  += '<option value="Žirgo namas">Žirgo namas</option>';
+            sel_ResidenceN.innerHTML = ResidenceN_options_str;
+            div_ResidenceN.appendChild(sel_ResidenceN);
+            var lab_ResidenceN = document.createElement('div');
+            lab_ResidenceN.innerHTML = 'Filter by residence name';
+            lab_ResidenceN.className = 'filterlabel';
+            div_ResidenceN.appendChild(lab_ResidenceN);
+            var reset_ResidenceN = document.createElement('div');
+            reset_ResidenceN.innerHTML = 'clear filter';
+            reset_ResidenceN.className = 'filterlabel';
+            reset_ResidenceN.onclick = function() {
+                var options = document.getElementById("sel_ResidenceN").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_ResidenceN.appendChild(reset_ResidenceN);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_LakeName = document.createElement('div');
+            div_LakeName.id = "div_LakeName";
+            div_LakeName.className= "filterselect";
+            document.getElementById("menu").appendChild(div_LakeName);
+            sel_LakeName = document.createElement('select');
+            sel_LakeName.multiple = true;
+            sel_LakeName.size = 10;
+            sel_LakeName.id = "sel_LakeName";
+            var LakeName_options_str = "<option value='' unselected></option>";
+            sel_LakeName.onchange = function(){filterFunc()};
+            LakeName_options_str  += '<option value="Amsterdamas">Amsterdamas</option>';
+            LakeName_options_str  += '<option value="Bitė">Bitė</option>';
+            LakeName_options_str  += '<option value="Dienelė">Dienelė</option>';
+            LakeName_options_str  += '<option value="Eglė">Eglė</option>';
+            LakeName_options_str  += '<option value="Komanda">Komanda</option>';
+            LakeName_options_str  += '<option value="Manymas">Manymas</option>';
+            LakeName_options_str  += '<option value="Mokslas">Mokslas</option>';
+            LakeName_options_str  += '<option value="Omanas">Omanas</option>';
+            LakeName_options_str  += '<option value="Ralis">Ralis</option>';
+            LakeName_options_str  += '<option value="Rekordas">Rekordas</option>';
+            LakeName_options_str  += '<option value="Vainikas">Vainikas</option>';
+            LakeName_options_str  += '<option value="Viktorija">Viktorija</option>';
+            LakeName_options_str  += '<option value="Voras">Voras</option>';
+            LakeName_options_str  += '<option value="Žaluma">Žaluma</option>';
+            LakeName_options_str  += '<option value="Žvaigdždė">Žvaigdždė</option>';
+            sel_LakeName.innerHTML = LakeName_options_str;
+            div_LakeName.appendChild(sel_LakeName);
+            var lab_LakeName = document.createElement('div');
+            lab_LakeName.innerHTML = 'Filter by lake name';
+            lab_LakeName.className = 'filterlabel';
+            div_LakeName.appendChild(lab_LakeName);
+            var reset_LakeName = document.createElement('div');
+            reset_LakeName.innerHTML = 'clear filter';
+            reset_LakeName.className = 'filterlabel';
+            reset_LakeName.onclick = function() {
+                var options = document.getElementById("sel_LakeName").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_LakeName.appendChild(reset_LakeName);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_PostCode = document.createElement('div');
+            div_PostCode.id = "div_PostCode";
+            div_PostCode.className= "filterselect";
+            document.getElementById("menu").appendChild(div_PostCode);
+            sel_PostCode = document.createElement('select');
+            sel_PostCode.multiple = true;
+            sel_PostCode.size = 3;
+            sel_PostCode.id = "sel_PostCode";
+            var PostCode_options_str = "<option value='' unselected></option>";
+            sel_PostCode.onchange = function(){filterFunc()};
+            PostCode_options_str  += '<option value="55022">55022</option>';
+            PostCode_options_str  += '<option value="55023">55023</option>';
+            PostCode_options_str  += '<option value="55024">55024</option>';
+            sel_PostCode.innerHTML = PostCode_options_str;
+            div_PostCode.appendChild(sel_PostCode);
+            var lab_PostCode = document.createElement('div');
+            lab_PostCode.innerHTML = 'Filter by postal code';
+            lab_PostCode.className = 'filterlabel';
+            div_PostCode.appendChild(lab_PostCode);
+            var reset_PostCode = document.createElement('div');
+            reset_PostCode.innerHTML = 'clear filter';
+			reset_PostCode.style["cursor"] = 'pointer';
+            reset_PostCode.className = 'filterlabel';
+            reset_PostCode.onclick = function() {
+                var options = document.getElementById("sel_PostCode").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_PostCode.appendChild(reset_PostCode);
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        resetLabels([layer_Residences_3,layer_Lakes_4,layer_Road_5]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_4,layer_Road_5]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_4,layer_Road_5]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_4,layer_Road_5]);
+        });
+        </script>
+    </body>
+</html>

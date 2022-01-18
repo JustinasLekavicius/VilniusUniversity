@@ -1,0 +1,12 @@
+<coverageStore>
+  <id>CoverageStoreInfoImpl--49328e9b:17df311e03f:-7ff1</id>
+  <name>map</name>
+  <type>GeoTIFF</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl--49328e9b:17df311e03f:-7ff8</id>
+  </workspace>
+  <__default>false</__default>
+  <dateCreated>2021-12-25 20:02:17.139 UTC</dateCreated>
+  <url>file:data/Task5/map/map.geotiff</url>
+</coverageStore>

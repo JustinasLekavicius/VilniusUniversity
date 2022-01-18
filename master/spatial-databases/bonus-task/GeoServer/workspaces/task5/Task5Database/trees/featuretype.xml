@@ -1,0 +1,43 @@
+<featureType>
+  <id>FeatureTypeInfoImpl--5a34e290:17df6542867:-7efb</id>
+  <name>trees</name>
+  <nativeName>trees</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl--5a34e290:17df6542867:-7fb9</id>
+  </namespace>
+  <title>trees</title>
+  <keywords>
+    <string>features</string>
+    <string>trees</string>
+  </keywords>
+  <srs>EPSG:4326</srs>
+  <nativeBoundingBox>
+    <minx>54.446014404296875</minx>
+    <maxx>54.45595169067383</maxx>
+    <miny>24.04294776916504</miny>
+    <maxy>24.048959732055664</maxy>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>54.446014404296875</minx>
+    <maxx>54.45595169067383</maxx>
+    <miny>24.04294776916504</miny>
+    <maxy>24.048959732055664</maxy>
+    <crs>EPSG:4326</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--5a34e290:17df6542867:-7f88</id>
+  </store>
+  <serviceConfiguration>false</serviceConfiguration>
+  <simpleConversionEnabled>false</simpleConversionEnabled>
+  <internationalTitle/>
+  <internationalAbstract/>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+  <padWithZeros>false</padWithZeros>
+  <forcedDecimal>false</forcedDecimal>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <skipNumberMatched>false</skipNumberMatched>
+  <circularArcPresent>false</circularArcPresent>
+</featureType>

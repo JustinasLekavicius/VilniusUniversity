@@ -1,0 +1,183 @@
+<!DOCTYPE qgis-layer-definition>
+<qlr>
+  <layer-tree-group checked="Qt::Checked" expanded="1" name="">
+    <customproperties>
+      <Option/>
+    </customproperties>
+    <layer-tree-layer checked="Qt::Checked" expanded="1" id="Task1Answers_39b8198e_cf6a_448e_8a6b_dd65b69b418d" name="Task1Answers" legend_split_behavior="0" legend_exp="" patch_size="-1,-1" source="Task1Answers.gpkg|layername=Task1Answers" providerKey="ogr">
+      <customproperties>
+        <Option/>
+      </customproperties>
+    </layer-tree-layer>
+  </layer-tree-group>
+  <maplayers>
+    <maplayer maxScale="0" readOnly="0" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" wkbType="NoGeometry" minScale="1e+08" styleCategories="AllStyleCategories" hasScaleBasedVisibilityFlag="0" refreshOnNotifyEnabled="0" geometry="No geometry" refreshOnNotifyMessage="">
+      <id>Task1Answers_39b8198e_cf6a_448e_8a6b_dd65b69b418d</id>
+      <datasource>./Task1Answers.gpkg|layername=Task1Answers</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Task1Answers</layername>
+      <srs>
+        <spatialrefsys>
+          <wkt></wkt>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type>dataset</type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <wkt></wkt>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+        <Private>0</Private>
+      </flags>
+      <temporal startExpression="" mode="0" enabled="0" durationField="" startField="" durationUnit="min" accumulate="0" endField="" fixedDuration="0" endExpression="">
+        <fixedRange>
+          <start></start>
+          <end></end>
+        </fixedRange>
+      </temporal>
+      <customproperties>
+        <Option type="Map">
+          <Option type="List" name="dualview/previewExpressions">
+            <Option value="&quot;Country&quot;" type="QString"/>
+          </Option>
+        </Option>
+      </customproperties>
+      <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+        <activeChecks type="StringList">
+          <Option value="" type="QString"/>
+        </activeChecks>
+        <checkConfiguration/>
+      </geometryOptions>
+      <legend showLabelLegend="0" type="default-vector"/>
+      <referencedLayers/>
+      <fieldConfiguration>
+        <field name="fid" configurationFlags="None">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Country" configurationFlags="None">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CityInCountryNearDanube" configurationFlags="None">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CityIsNearDanube" configurationFlags="None">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias index="0" name="" field="fid"/>
+        <alias index="1" name="" field="Country"/>
+        <alias index="2" name="" field="CityInCountryNearDanube"/>
+        <alias index="3" name="" field="CityIsNearDanube"/>
+      </aliases>
+      <defaults>
+        <default applyOnUpdate="0" field="fid" expression=""/>
+        <default applyOnUpdate="0" field="Country" expression=""/>
+        <default applyOnUpdate="0" field="CityInCountryNearDanube" expression=""/>
+        <default applyOnUpdate="0" field="CityIsNearDanube" expression=""/>
+      </defaults>
+      <constraints>
+        <constraint constraints="3" notnull_strength="1" unique_strength="1" exp_strength="0" field="fid"/>
+        <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="Country"/>
+        <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="CityInCountryNearDanube"/>
+        <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="CityIsNearDanube"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="fid"/>
+        <constraint desc="" exp="" field="Country"/>
+        <constraint desc="" exp="" field="CityInCountryNearDanube"/>
+        <constraint desc="" exp="" field="CityIsNearDanube"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions>
+        <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+      </attributeactions>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns>
+          <column hidden="0" type="field" name="fid" width="-1"/>
+          <column hidden="0" type="field" name="Country" width="-1"/>
+          <column hidden="0" type="field" name="CityInCountryNearDanube" width="-1"/>
+          <column hidden="0" type="field" name="CityIsNearDanube" width="-1"/>
+          <column hidden="1" type="actions" width="-1"/>
+        </columns>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <storedexpressions/>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <reuseLastValue/>
+      <dataDefinedFieldProperties/>
+      <widgets/>
+      <previewExpression>"Country"</previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+  </maplayers>
+</qlr>

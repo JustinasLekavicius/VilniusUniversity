@@ -1,0 +1,102 @@
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<style type="text/css">
+    body, html {
+        height: 100%;
+    }
+
+    .bg {
+        filter: blur(16px);
+        -webkit-filter: blur(16px);
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .container-fluid {
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        color: white;
+        font-weight: bold;
+        border: 3px solid #f1f1f1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: 80%;
+        padding: 20px;
+        text-align: left;
+    }
+</style>
+<div class="bg" style="background-image: url('{{movie[7]}}')"></div>
+<div class="container-fluid">
+<form action="/home">
+
+                        <input type="submit" class="btn btn-primary" value="Back to main page">
+                                </form>
+    <div class="row">
+        <div class="col-md-12">
+            <h3> Adding a movie</h3>
+            <p>
+                Please enter the details below for the movie you would like to add to the database.</p>
+            <form action="/addmovie" method="POST">
+                <div class="form-group">
+
+                    <label for="movieTitle">
+                        Movie title
+                    </label>
+                    <input type="text" style="width: 300px" class="form-control" id="movieTitle" name="movieTitle"
+                           required/>
+                </div>
+                <div class="form-group">
+
+                    <label for="movieTitleForeign">
+                        Movie title in foreign language
+                    </label>
+                    <input type="text" style="width: 300px" class="form-control" id="movieTitleForeign"
+                           name="movieTitleForeign" required/>
+                </div>
+                <div class="form-group">
+
+                    <label for="movieDirector">
+                        Director of the movie. You may enter several directors. <strong>They must be separated by
+                        commas.</strong>
+                    </label>
+                    <input type="text" style="width: 400px" class="form-control" id="movieDirector" name="movieDirector"
+                           required/>
+                </div>
+                <div class="form-group">
+
+                    <label for="movieAgeRating">
+                        Age rating of the movie. The rating may be from 0 up to 18.</label>
+                    <input type="text" style="width: 50px" class="form-control" id="movieAgeRating"
+                           name="movieAgeRating" required/>
+                </div>
+                <div class="form-group">
+
+                    <label for="movieDuration"> Duration of the movie. Use this format, replace x with hours and minutes
+                        respectively: xh xx min</label>
+                    <input type="text" style="width: 100px" class="form-control" id="movieDuration" name="movieDuration"
+                           required/>
+                </div>
+                <div class="checkbox">
+
+                    <label>
+                        <input type="checkbox" id="movieIs3D" name="movieIs3D"/> Check this box if the movie is in 3D.
+                    </label>
+                </div>
+                <div class="form-group">
+
+                    <label for="movieImage">(optional) Image link for the movie.</label>
+                    <input type="text" class="form-control" id="movieImage" name="movieImage"/>
+                </div>
+                <input type="submit" class="btn btn-success" value="Add movie to the database">
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

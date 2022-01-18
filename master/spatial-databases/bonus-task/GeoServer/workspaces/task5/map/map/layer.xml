@@ -1,0 +1,19 @@
+<layer>
+  <name>map</name>
+  <id>LayerInfoImpl--49328e9b:17df311e03f:-7fef</id>
+  <type>RASTER</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--49328e9b:17df311e03f:-7ff2</id>
+  </defaultStyle>
+  <resource class="coverage">
+    <id>CoverageInfoImpl--49328e9b:17df311e03f:-7ff0</id>
+  </resource>
+  <queryable>true</queryable>
+  <opaque>false</opaque>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2021-12-25 20:02:17.170 UTC</dateCreated>
+  <dateModified>2021-12-25 20:02:17.249 UTC</dateModified>
+</layer>

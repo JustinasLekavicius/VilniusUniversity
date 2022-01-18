@@ -1,0 +1,43 @@
+<featureType>
+  <id>FeatureTypeInfoImpl--5a34e290:17df6542867:-7f87</id>
+  <name>farmfields</name>
+  <nativeName>farmfields</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl--5a34e290:17df6542867:-7fb9</id>
+  </namespace>
+  <title>farmfields</title>
+  <keywords>
+    <string>features</string>
+    <string>farmfields</string>
+  </keywords>
+  <srs>EPSG:4326</srs>
+  <nativeBoundingBox>
+    <minx>54.44599914550781</minx>
+    <maxx>54.45652389526367</maxx>
+    <miny>24.042888641357422</miny>
+    <maxy>24.04899024963379</maxy>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>54.44599914550781</minx>
+    <maxx>54.45652389526367</maxx>
+    <miny>24.042888641357422</miny>
+    <maxy>24.04899024963379</maxy>
+    <crs>EPSG:4326</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--5a34e290:17df6542867:-7f88</id>
+  </store>
+  <serviceConfiguration>false</serviceConfiguration>
+  <simpleConversionEnabled>false</simpleConversionEnabled>
+  <internationalTitle/>
+  <internationalAbstract/>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+  <padWithZeros>false</padWithZeros>
+  <forcedDecimal>false</forcedDecimal>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <skipNumberMatched>false</skipNumberMatched>
+  <circularArcPresent>false</circularArcPresent>
+</featureType>

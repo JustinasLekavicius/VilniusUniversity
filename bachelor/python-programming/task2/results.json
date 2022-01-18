@@ -1,0 +1,37 @@
+{
+  "Queen's Corgi": {
+    "title": "Karalienės korgis",
+    "director": "Ben Stassen",
+    "age_rating": 3,
+    "duration": 92,
+    "is_3d": false
+  },
+  "Shoplifters": {
+    "title": "Vagiliautojai",
+    "director": "Hirokazu Kore-eda",
+    "age_rating": 13,
+    "duration": 121,
+    "is_3d": false
+  },
+  "Beautiful Boy": {
+    "title": "Gražus sūnus",
+    "director": "Felix Van Groeningen",
+    "age_rating": 16,
+    "duration": 120,
+    "is_3d": false
+  },
+  "Summer": {
+    "title": "Vasara",
+    "director": "Kirill Serebrennikov",
+    "age_rating": 13,
+    "duration": 126,
+    "is_3d": false
+  },
+  "Star Wars Episode III: Revenge of the Sith": {
+    "title": "Star Wars Episode III: Revenge of the Sith",
+    "director": "George Lucas",
+    "age_rating": "12",
+    "duration": "125",
+    "is_3d": "False"
+  }
+}

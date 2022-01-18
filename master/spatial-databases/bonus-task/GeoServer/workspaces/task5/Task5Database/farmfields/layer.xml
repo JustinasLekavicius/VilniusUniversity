@@ -1,0 +1,16 @@
+<layer>
+  <name>farmfields</name>
+  <id>LayerInfoImpl--5a34e290:17df6542867:-7f86</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--570ae188:124761b8d78:-7fe0</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--5a34e290:17df6542867:-7f87</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2021-12-26 10:48:34.12 UTC</dateCreated>
+</layer>

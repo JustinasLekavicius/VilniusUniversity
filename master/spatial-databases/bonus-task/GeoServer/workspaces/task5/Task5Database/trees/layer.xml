@@ -1,0 +1,16 @@
+<layer>
+  <name>trees</name>
+  <id>LayerInfoImpl--5a34e290:17df6542867:-7efa</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--570ae188:124761b8d78:-7fe0</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--5a34e290:17df6542867:-7efb</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2021-12-26 10:51:07.503 UTC</dateCreated>
+</layer>

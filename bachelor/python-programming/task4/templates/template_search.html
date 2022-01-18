@@ -1,0 +1,155 @@
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<style type="text/css">
+    body, html {
+        height: 100%;
+    }
+
+    .bg {
+        filter: blur(16px);
+        -webkit-filter: blur(16px);
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+
+    }
+
+    .container-fluid {
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        color: white;
+        font-weight: bold;
+        border: 3px solid #f1f1f1;
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        z-index: 2;
+        width: 90%;
+        padding: 20px;
+        text-align: left;
+        overflow-y: scroll;
+        overflow-x: scroll;
+        height: 90%;
+    }
+
+    .tg {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    .tg td {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        padding: 10px 5px;
+        border-style: solid;
+        border-width: 1px;
+        overflow: hidden;
+        word-break: normal;
+        border-color: black;
+    }
+
+    .tg th {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+        padding: 10px 5px;
+        border-style: solid;
+        border-width: 1px;
+        overflow: hidden;
+        word-break: normal;
+        border-color: black;
+    }
+
+    .tg .tg-0lax {
+        text-align: left;
+        vertical-align: top
+    }
+</style>
+<div class="bg" style="background-image: url('{{movie[7]}}')"></div>
+<div class="container-fluid">
+
+    <h1>Search results for '{{criterion}}' (found {{count_news}} news and {{count_movies}} movies):</h1>
+    <form action="/home">
+        <input type="submit" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px"
+               value="Back to main page">
+
+    </form>
+    <h1>News found:</h1>
+    {% if count_news > 0 %}
+
+    <table class='table'>
+        <tr>
+            <th class="tg-0lax">News ID</th>
+            <th class="tg-0lax">News title</th>
+            <th class="tg-0lax">News description</th>
+            <th class="tg-0lax">News link</th>
+            <th class="tg-0lax">Edit news</th>
+            <th class="tg-0lax">Remove news (cannot be undone!)</th>
+
+
+        </tr>
+        {% for item in data_news %}
+        <tr>
+            <th class="tg-0lax">{{item[0]}}</th>
+            <th class="tg-0lax">{{item[1]}}</th>
+            <th class="tg-0lax">{{item[2]}}</th>
+            {% if item[3] == "None" %}
+            <th class="tg-0lax">No link provided.</a></th>
+            {% elif item[3] != "None" %}
+            <th class="tg-0lax"><a href={{item[3]}}> {{item[3]}}</a></th>
+            {% endif %}
+            <th class="tg-0lax">
+                                    <form action="/editnews/{{item[0]}}">
+
+                <button type="submit" class="btn btn-primary" value={{item[0]}}>Edit the news data</button>
+                                    </form>
+            </th>
+            <th class="tg-0lax">
+                <form action="/search?search_input={{criterion}}" method="POST">
+
+                    <button type="submit" class="btn btn-danger" name="delete" value={{item[0]}}>Remove news from the
+                        database
+                    </button>
+                </form>
+            </th>
+
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% elif count_news == 0 %}
+    <h2 style="text-align: center; color: red;">No news found.</h2>
+    {% endif %}
+
+    <h1>Movies found:</h1>
+    {% if count_movies > 0 %}
+
+    <table class='table'>
+        <tr>
+            <th class="tg-0lax">Movie ID</th>
+            <th class="tg-0lax">Movie title</th>
+            <th class="tg-0lax">View movie info</th>
+
+
+        </tr>
+        {% for item in data_movies %}
+        <tr>
+            <th class="tg-0lax">{{item[0]}}</th>
+            <th class="tg-0lax">{{item[1]}}</th>
+            <form action="/movie/{{item[0]}}" method="POST">
+                <th class="tg-0lax"><input type="submit" class="btn btn-info" name="view"
+                                           value="View information of the movie">
+                </th>
+            </form>
+
+
+        </tr>
+        {% endfor %}
+    </table>
+    {% elif count_movies == 0 %}
+    <h2 style="text-align: center; color: red;">No movies found.</h2>
+    {% endif %}
+</div>
+{% endblock %}

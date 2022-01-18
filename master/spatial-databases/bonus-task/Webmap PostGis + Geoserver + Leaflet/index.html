@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>ERDB žemėlapis</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/filter.css">
+        <link rel="stylesheet" href="css/modal.css">
+
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.wms.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/tailDT.js"></script>
+        <script src="js/nouislider.min.js"></script>
+        <script src="js/wNumb.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/build/ol.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css">
+        
+        <script src="js/OpenLayers.js"></script>
+        <script>
+
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxNativeZoom: 19, maxZoom:18, minZoom:1
+        }).fitBounds([[24.042106311105155,54.44255921218174],[24.048506699168836,54.46261554304518]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_Map_0');
+        map.getPane('pane_Map_0').style.zIndex = 400;
+        var layer_Map_0 = L.WMS.layer("http://localhost:8080/geoserver/wms", "Task5:map", {
+            pane: 'pane_Map_0',
+            format: 'image/png',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 1,
+            identify: false,
+            attribution: '',
+        });
+/////////////////////////////////// Add marker to map with weather data.
+
+        function addPostBox(longitude, latitude)
+        {
+            var id;
+            map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Postboxes_4"){
+            id = objectLength(lyr["_layers"]); // for your example, 3
+        }});
+        OpenLayers.Request.POST({
+    crossOrigin: 'anonymous',
+        url: 'http://localhost:8080/geoserver/wfs',
+        username: 'admin',
+        password: 'geoserver',
+        data: '<wfs:Transaction service="WFS" version="1.0.0"\n' +
+  'xmlns:wfs="http://www.opengis.net/wfs"\n' +
+  'xmlns:topp="http://www.openplans.org/topp"\n' +
+  'xmlns:gml="http://www.opengis.net/gml"\n' +
+  'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n' +
+  'xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd http://www.openplans.org/Task5 http://localhost:8080/geoserver/wfs/DescribeFeatureType?typename=Task5:postboxes"> \n' +
+  '<wfs:Insert>\n' +
+    '<postboxes>\n' +
+    '<gml:geom>\n' +
+'<gml:Point srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:4326">\n'+
+    '<gml:coordinates decimal="." cs="," ts=" ">' + latitude + ',' + longitude + '</gml:coordinates>\n' +
+            '</gml:Point> \n'+
+     '</gml:geom> \n'+
+    '<street>Nemuno</street> \n'+
+    '<postalcode>55023</postalcode> \n'+
+    '<housename>14</housename> \n'+
+    '<id>' + id + '</id> \n' +
+  '</postboxes> \n'+
+ '</wfs:Insert> \n'+
+'</wfs:Transaction>'
+
+    }).then(setTimeout(function(){location.reload()}, 1000));
+
+ }
+ function objectLength(obj) {
+  var result = 0;
+  for(var prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+    // or Object.prototype.hasOwnProperty.call(obj, prop)
+      result++;
+    }
+  }
+  return result;
+}
+ function updatePostBox(id, street, postcode, name)
+ {
+     OpenLayers.Request.POST({
+    crossOrigin: 'anonymous',
+        url: 'http://localhost:8080/geoserver/wfs',
+        username: 'admin',
+        password: 'geoserver',
+        data: '<wfs:Transaction service="WFS" version="1.0.0"\n' +
+        'xmlns:ogc="http://www.opengis.net/ogc"\n' +
+        'xmlns:wfs="http://www.opengis.net/wfs"\n' +
+        'xmlns:topp="http://www.openplans.org/topp">\n' +
+        '<wfs:Update typeName="Task5:postboxes">\n' +
+        '<wfs:Property>\n' +
+        '<wfs:Name>street</wfs:Name>\n'+
+        '<wfs:Value>'+ street + '</wfs:Value>\n' +
+            '</wfs:Property>\n'+
+            '<wfs:Property>\n' +
+        '<wfs:Name>postalcode</wfs:Name>\n'+
+        '<wfs:Value>'+ postcode + '</wfs:Value>\n' +
+            '</wfs:Property>\n'+
+            '<wfs:Property>\n' +
+        '<wfs:Name>housename</wfs:Name>\n'+
+        '<wfs:Value>'+ name + '</wfs:Value>\n' +
+            '</wfs:Property>\n'+
+     '<ogc:Filter>\n'+
+    '<ogc:FeatureId fid="'+ id + '"/>\n'+
+    '</ogc:Filter>\n'+
+    '</wfs:Update>\n'+
+'</wfs:Transaction>'
+
+    }).then(setTimeout(function(){location.reload()}, 1000));
+
+
+ }
+ function updateLake(id, name)
+ {
+     OpenLayers.Request.POST({
+    crossOrigin: 'anonymous',
+        url: 'http://localhost:8080/geoserver/wfs',
+        username: 'admin',
+        password: 'geoserver',
+        data: '<wfs:Transaction service="WFS" version="1.0.0"\n' +
+        'xmlns:ogc="http://www.opengis.net/ogc"\n' +
+        'xmlns:wfs="http://www.opengis.net/wfs"\n' +
+        'xmlns:topp="http://www.openplans.org/topp">\n' +
+        '<wfs:Update typeName="Task5:lakes">\n' +
+            '<wfs:Property>\n' +
+        '<wfs:Name>lakename</wfs:Name>\n'+
+        '<wfs:Value>'+ name + '</wfs:Value>\n' +
+            '</wfs:Property>\n'+
+     '<ogc:Filter>\n'+
+    '<ogc:FeatureId fid="'+ id + '"/>\n'+
+    '</ogc:Filter>\n'+
+    '</wfs:Update>\n'+
+'</wfs:Transaction>'
+
+    }).then(setTimeout(function(){location.reload()}, 1000));
+
+
+ }
+ function updateResidence(id, street, postcode, name)
+ {
+     OpenLayers.Request.POST({
+    crossOrigin: 'anonymous',
+        url: 'http://localhost:8080/geoserver/wfs',
+        username: 'admin',
+        password: 'geoserver',
+        data: '<wfs:Transaction service="WFS" version="1.0.0"\n' +
+        'xmlns:ogc="http://www.opengis.net/ogc"\n' +
+        'xmlns:wfs="http://www.opengis.net/wfs"\n' +
+        'xmlns:topp="http://www.openplans.org/topp">\n' +
+        '<wfs:Update typeName="Task5:residences">\n' +
+            '<wfs:Property>\n' +
+        '<wfs:Name>street</wfs:Name>\n'+
+        '<wfs:Value>'+ street + '</wfs:Value>\n' +
+            '</wfs:Property>\n'+
+            '<wfs:Property>\n' +
+        '<wfs:Name>residencen</wfs:Name>\n'+
+        '<wfs:Value>'+ name + '</wfs:Value>\n' +
+            '</wfs:Property>\n'+
+            '<wfs:Property>\n' +
+        '<wfs:Name>postcode</wfs:Name>\n'+
+        '<wfs:Value>'+ postcode + '</wfs:Value>\n' +
+            '</wfs:Property>\n'+
+     '<ogc:Filter>\n'+
+    '<ogc:FeatureId fid="'+ id + '"/>\n'+
+    '</ogc:Filter>\n'+
+    '</wfs:Update>\n'+
+'</wfs:Transaction>'
+
+    }).then(setTimeout(function(){location.reload()}, 1000));
+
+
+ }
+ function removeObject(feature, typeName)
+        {
+        OpenLayers.Request.POST({
+    crossOrigin: 'anonymous',
+        url: 'http://localhost:8080/geoserver/wfs',
+        username: 'admin',
+        password: 'geoserver',
+        data: '<wfs:Transaction service="WFS" version="1.0.0"\n' +
+        'xmlns:cdf="http://www.opengis.net/cite/data"\n' +
+        'xmlns:ogc="http://www.opengis.net/ogc"\n' +
+        'xmlns:wfs="http://www.opengis.net/wfs"\n' +
+        'xmlns:topp="http://www.openplans.org/topp">\n' +
+        '<wfs:Delete typeName="' + typeName + '">\n' +
+        '<ogc:Filter>\n' +
+        '<ogc:PropertyIsEqualTo>\n'+
+        '<ogc:PropertyName>id</ogc:PropertyName>\n' +
+            '<ogc:Literal>' + feature.properties["id"] + '</ogc:Literal>\n'+
+     '</ogc:PropertyIsEqualTo>\n'+
+    '</ogc:Filter>\n'+
+    '</wfs:Delete>\n'+
+'</wfs:Transaction>'
+
+    }).then(setTimeout(function(){location.reload()}, 1000));
+
+    
+ }
+        function onMapClick(e) {
+    var popup = L.popup()
+    
+    popup
+        .setLatLng(e.latlng)
+        .setContent("Gaunama oro informacija")
+        .openOn(map);
+
+    fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + e.latlng.lng + '&lon=' + e.latlng.lat + '&appid=134c379c7ae600ae9be14acedade3faf',)
+        .then(r => r.json()) 
+        .then(data => { 
+            // Change this line to show exactly the info you need
+            popup.setContent("Šalis: " + data.sys.country + ", miestas: " + data.name + ", temperatūra: " + (data.main.temp -273.15).toFixed(0) + " C, vėjo greitis: " + data.wind.speed + " m/s, drėgnumas: " + data.main.humidity + "%, slėgis: " + data.main.pressure + " hPa." + "<br/> <button type='button' onclick='addPostBox(" + e.latlng.lng + "," + e.latlng.lat + " )' class='btn btn-primary sidebar-open-button'>Add postbox here</button>")
+                
+        })
+
+}
+
+map.on('click', onMapClick)
+///////////////////////////////////////////////////////////////////////////////////
+        map.addLayer(layer_Map_0);
+        function pop_Trees_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <th scope="row">Trees</th>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tree area</th>\
+                        <td>' + (feature.properties['treearea'] !== null ? autolinker.link(feature.properties['treearea'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Perimeter</th>\
+                        <td>' + (feature.properties['perimeter'] !== null ? autolinker.link(feature.properties['perimeter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row"><button type="button" id="removeObjectButton" class="btn btn-primary sidebar-open-button">Remove object</button></th>\
+                </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            layer.on('click', function (e){
+                document.getElementById("removeObjectButton").onclick = function() {removeObject(feature, ("Task5:" + feature.id.split(".")[0]))};
+                layer.bindPopup(popupContent, {maxHeight: 400});});
+    }
+
+        function style_Trees_1_0() {
+            return {
+                pane: 'pane_Trees_1',
+                opacity: 1,
+                color: 'rgba(56,128,54,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(77,175,74,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Trees_1');
+        map.getPane('pane_Trees_1').style.zIndex = 401;
+        map.getPane('pane_Trees_1').style['mix-blend-mode'] = 'normal';
+        var layer_Trees_1 = L.geoJson(null, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Trees_1',
+            layerName: 'layer_Trees_1',
+            style: style_Trees_1_0,
+            pane: 'pane_Trees_1',
+            onEachFeature: pop_Trees_1
+        });
+        function getTrees_1Json(geojson) {
+            layer_Trees_1.addData(geojson);
+        };
+        bounds_group.addLayer(layer_Trees_1);
+        map.addLayer(layer_Trees_1);
+        function pop_Roads_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Roads_2_0() {
+            return {
+                pane: 'pane_Roads_2',
+                opacity: 1,
+                color: 'rgba(255,200,94,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: false,
+            }
+        }
+        map.createPane('pane_Roads_2');
+        map.getPane('pane_Roads_2').style.zIndex = 402;
+        map.getPane('pane_Roads_2').style['mix-blend-mode'] = 'normal';
+        var layer_Roads_2 = L.geoJson(null, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Roads_2',
+            layerName: 'layer_Roads_2',
+            style: style_Roads_2_0,
+            pane: 'pane_Roads_2',
+            onEachFeature: pop_Roads_2
+        });
+        function getRoads_2Json(geojson) {
+            layer_Roads_2.addData(geojson);
+        };
+        bounds_group.addLayer(layer_Roads_2);
+        map.addLayer(layer_Roads_2);
+        function pop_Residences_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+                var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Residence</th>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Street</th>\
+                        <td>' + (feature.properties['street'] !== null ? autolinker.link(feature.properties['street'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Postal code</th>\
+                        <td>' + (feature.properties['postcode'] !== null ? autolinker.link(feature.properties['postcode'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Residence name</th>\
+                        <td>' + (feature.properties['residencen'] !== null ? autolinker.link(feature.properties['residencen'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Area</th>\
+                        <td>' + (feature.properties['area'] !== null ? autolinker.link(feature.properties['area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row" style="padding-top: 50px; padding-bottom: 50px;"><button type="button" id="removeObjectButton" class="btn btn-primary sidebar-open-button">Remove object</button> <button id="editObjectButton">Edit object</button> </th>\
+                </tr>\
+                </table>\
+                <div id="editModalResidence" class="modal"> \
+                <div class="modal-content"> \
+    <span class="close">&times;</span> \
+    <p>Edit the info of the object</p> \
+    <table>\
+                        <th scope="row"> id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()): '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Street</th>\
+                        <td>  <input type="text" id="property_street" name="property_street" value=' + feature.properties['street'] +'>\</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Postal code</th>\
+                        <td>  <input type="text" id="property_postalcode" name="property_postalcode" value=' + feature.properties['postcode'] +'>\</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Residence name</th>\
+                        <td>  <input type="text" id="property_housename" name="property_housename" value=' + feature.properties['residencen'] +'>\</td>\
+                    </tr>\
+                    </table>\
+    <button id="submitEditButton">Submit edit</button> \
+  </div> \
+</div>'
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            layer.on('click', function (e){
+                document.getElementById("removeObjectButton").onclick = function() {removeObject(feature, ("Task5:" + feature.id.split(".")[0]))};
+                document.getElementById("editObjectButton").onclick = function() { 
+                    var modal = document.getElementById("editModalResidence");
+    var editButton = document.getElementById("editObjectButton");
+var span = document.getElementsByClassName("close")[0];
+editButton.onclick = function() {
+  modal.style.display = "block";
+}
+span.onclick = function() {
+  modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+                    };
+                    document.getElementById("submitEditButton").onclick = function() { 
+                        updateResidence(feature.id, 
+                        document.getElementById("property_street").value, 
+                        document.getElementById("property_postalcode").value, 
+                        document.getElementById("property_housename").value)
+                    }
+                layer.bindPopup(popupContent, {maxHeight: 400});});
+                }
+        function style_Residences_3_0() {
+            return {
+                pane: 'pane_Residences_3',
+                opacity: 1,
+                color: 'rgba(247,247,247,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(150,150,150,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Residences_3');
+        map.getPane('pane_Residences_3').style.zIndex = 403;
+        map.getPane('pane_Residences_3').style['mix-blend-mode'] = 'normal';
+        var layer_Residences_3 = L.geoJson(null, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Residences_3',
+            layerName: 'layer_Residences_3',
+            style: style_Residences_3_0,
+            pane: 'pane_Residences_3',
+            onEachFeature: pop_Residences_3
+        });
+        function getResidences_3Json(geojson) {
+            layer_Residences_3.addData(geojson);
+        };
+        
+        bounds_group.addLayer(layer_Residences_3);
+        map.addLayer(layer_Residences_3);
+        function pop_Postboxes_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            
+                var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Post box</th>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()): '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Street</th>\
+                        <td>' + (feature.properties['street'] !== null ? autolinker.link(feature.properties['street'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Postal code</th>\
+                        <td>' + (feature.properties['postalcode'] !== null ? autolinker.link(feature.properties['postalcode'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">House name</th>\
+                        <td>' + (feature.properties['housename'] !== null ? autolinker.link(feature.properties['housename'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row" style="padding-top: 50px; padding-right: 20px; padding-left: 20px; padding-bottom: 50px;"><button type="button" id="removeObjectButton" class="btn btn-primary sidebar-open-button">Remove object</button> <button id="editObjectButton">Edit object</button> </th>\
+                </tr>\
+            </table>\
+<div id="editModalPostbox" class="modal"> \
+  <div class="modal-content"> \
+    <span class="close">&times;</span> \
+    <p>Edit the info of the object</p> \
+    <table>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()): '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Street</th>\
+                        <td>  <input type="text" id="property_street" name="property_street" value=' + feature.properties['street'] +'>\</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Postal code</th>\
+                        <td>  <input type="text" id="property_postalcode" name="property_postalcode" value=' + feature.properties['postalcode'] +'>\</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">House name</th>\
+                        <td>  <input type="text" id="property_housename" name="property_housename" value=' + feature.properties['housename'] +'>\</td>\
+                    </tr>\
+                    </table>\
+    <button id="submitEditButton">Submit edit</button> \
+  </div> \
+</div>'                
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            layer.on('click', function (e){
+                document.getElementById("removeObjectButton").onclick = function() {removeObject(feature, ("Task5:" + feature.id.split(".")[0]))};
+                document.getElementById("editObjectButton").onclick = function() { 
+                    var modal = document.getElementById("editModalPostbox");
+    var editButton = document.getElementById("editObjectButton");
+var span = document.getElementsByClassName("close")[0];
+editButton.onclick = function() {
+  modal.style.display = "block";
+}
+span.onclick = function() {
+  modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+                    };
+                    document.getElementById("submitEditButton").onclick = function() { 
+                        updatePostBox(feature.id, 
+                        document.getElementById("property_street").value, 
+                        document.getElementById("property_postalcode").value, 
+                        document.getElementById("property_housename").value)
+                    }
+                layer.bindPopup(popupContent, {maxHeight: 400});});
+                }
+
+        function style_Postboxes_4_0() {
+            return {
+                pane: 'pane_Postboxes_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(213,180,60,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Postboxes_4');
+        map.getPane('pane_Postboxes_4').style.zIndex = 404;
+        map.getPane('pane_Postboxes_4').style['mix-blend-mode'] = 'normal';
+        function pointToLayer_Postboxes_4_0(feature, latlng) {
+            var context = {
+                feature: feature,
+                variables: {}
+            };
+            return L.circleMarker(latlng, style_Postboxes_4_0(feature));
+        }
+        var layer_Postboxes_4 = L.geoJson(null, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Postboxes_4',
+            layerName: 'layer_Postboxes_4',
+            pane: 'pane_Postboxes_4',
+            pointToLayer: pointToLayer_Postboxes_4_0, 
+            onEachFeature: pop_Postboxes_4
+        });
+        function getPostboxes_4Json(geojson) {
+            layer_Postboxes_4.addData(geojson);
+            setBounds();
+        };
+        bounds_group.addLayer(layer_Postboxes_4);
+        map.addLayer(layer_Postboxes_4);
+        function pop_Lakes_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <th scope="row">Lake</th>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lake name</th>\
+                        <td>' + (feature.properties['lakename'] !== null ? autolinker.link(feature.properties['lakename'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Area</th>\
+                        <td>' + (feature.properties['area'] !== null ? autolinker.link(feature.properties['area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Perimeter</th>\
+                        <td>' + (feature.properties['perimeter'] !== null ? autolinker.link(feature.properties['perimeter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row" style="padding-top: 50px; padding-right: 20px; padding-left: 20px; padding-bottom: 50px;"><button type="button" id="removeObjectButton" class="btn btn-primary sidebar-open-button">Remove object</button> <button id="editObjectButton">Edit object</button> </th>\
+                </tr>\
+                </table>\
+                <div id="editModalLake" class="modal"> \
+  <div class="modal-content"> \
+    <span class="close">&times;</span> \
+    <p>Edit the info of the object</p> \
+    <table>\
+                        <th scope="row"> id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()): '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lake name</th>\
+                        <td>  <input type="text" id="property_lakename" name="property_lakename" value=' + feature.properties['lakename'] +'>\</td>\
+                    </tr>\
+                    </table>\
+    <button id="submitEditButton">Submit edit</button> \
+  </div> \
+</div>'  ;
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            layer.on('click', function (e){
+                document.getElementById("removeObjectButton").onclick = function() {removeObject(feature, ("Task5:" + feature.id.split(".")[0]))};
+                document.getElementById("editObjectButton").onclick = function() { 
+                    var modal = document.getElementById("editModalLake");
+    var editButton = document.getElementById("editObjectButton");
+var span = document.getElementsByClassName("close")[0];
+editButton.onclick = function() {
+  modal.style.display = "block";
+}
+span.onclick = function() {
+  modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+                    };
+                    document.getElementById("submitEditButton").onclick = function() { 
+                        updateLake(feature.id, 
+                        document.getElementById("property_lakename").value); 
+                    }
+                layer.bindPopup(popupContent, {maxHeight: 400});});
+        }
+
+        function style_Lakes_5_0() {
+            return {
+                pane: 'pane_Lakes_5',
+                opacity: 1,
+                color: 'rgba(38,89,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(55,126,184,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Lakes_5');
+        map.getPane('pane_Lakes_5').style.zIndex = 405;
+        map.getPane('pane_Lakes_5').style['mix-blend-mode'] = 'normal';
+        var layer_Lakes_5 = L.geoJson(null, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Lakes_5',
+            layerName: 'layer_Lakes_5',
+            style: style_Lakes_5_0,
+            pane: 'pane_Lakes_5',
+            onEachFeature: pop_Lakes_5
+        });
+        function getLakes_5Json(geojson) {
+            layer_Lakes_5.addData(geojson);
+        };
+        bounds_group.addLayer(layer_Lakes_5);
+        map.addLayer(layer_Lakes_5);
+        function pop_Farmfields_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <th scope="row">Farmfield</th>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">farmfielda</th>\
+                        <td>' + (feature.properties['farmfielda'] !== null ? autolinker.link(feature.properties['farmfielda'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">farmfieldp</th>\
+                        <td>' + (feature.properties['farmfieldp'] !== null ? autolinker.link(feature.properties['farmfieldp'].toLocaleString()) : '') + '</td>\
+                        <tr>\
+                            <th scope="row""><button type="button" id="removeObjectButton" class="btn btn-primary sidebar-open-button">Remove object</button> </th>\
+                </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            layer.on('click', function (e){
+                document.getElementById("removeObjectButton").onclick = function() {removeObject(feature, ("Task5:" + feature.id.split(".")[0]))};
+
+                layer.bindPopup(popupContent, {maxHeight: 400});});
+    }
+
+        function style_Farmfields_6_0() {
+            return {
+                pane: 'pane_Farmfields_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(243,219,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Farmfields_6');
+        map.getPane('pane_Farmfields_6').style.zIndex = 406;
+        map.getPane('pane_Farmfields_6').style['mix-blend-mode'] = 'normal';
+        var layer_Farmfields_6 = L.geoJson(null, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Farmfields_6',
+            layerName: 'layer_Farmfields_6',
+            style: style_Farmfields_6_0,
+            pane: 'pane_Farmfields_6',
+            onEachFeature: pop_Farmfields_6
+        });
+        function getFarmfields_6Json(geojson) {
+            layer_Farmfields_6.addData(geojson);
+        };
+        bounds_group.addLayer(layer_Farmfields_6);
+        map.addLayer(layer_Farmfields_6);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Farmfields_6.png" /> Farmfields': layer_Farmfields_6,'<img src="legend/Lakes_5.png" /> Lakes': layer_Lakes_5,'<img src="legend/Postboxes_4.png" /> Postboxes': layer_Postboxes_4,'<img src="legend/Residences_3.png" /> Residences': layer_Residences_3,'<img src="legend/Roads_2.png" /> Roads': layer_Roads_2,'<img src="legend/Trees_1.png" /> Trees': layer_Trees_1,"Map": layer_Map_0,},{collapsed:false}).addTo(map);
+        resetLabels([layer_Residences_3,layer_Lakes_5]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_5]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_5]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_5]);
+        });
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"treearea": "int","farmfielda": "int","residencen": "str","lakename": "str","postcode": "str"};
+        function filterFunc(lyr) {
+            let newArray = [];
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            for (i = 0; i < Object.entries(lyr["_layers"]).length; i++) {
+                newArray.push(Object.entries(lyr["_layers"])[i][1].feature)
+}
+            features = newArray.splice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+        var i = 0;
+        layer_Residences_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['residencen'] !== null?String('<div style="color: #ffffff; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['residencen']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Residences_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_Lakes_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['lakename'] !== null?String('<div style="color: #ffffff; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['lakename']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Lakes_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+          }
+          
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_treearea = document.createElement("div");
+            div_treearea.id = "div_treearea";
+            div_treearea.className = "slider";
+            document.getElementById("menu").appendChild(div_treearea);
+            var lab_treearea = document.createElement('div');
+            lab_treearea.innerHTML  = 'Filter by tree field area: <span id="val_treearea"></span>';
+            lab_treearea.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_treearea);
+            var reset_treearea = document.createElement('div');
+            reset_treearea.innerHTML = 'clear filter';
+            reset_treearea.className = 'filterlabel';
+            reset_treearea.style["cursor"] = 'pointer';
+
+            lab_treearea.className = 'filterlabel';
+
+            reset_treearea.onclick = function() {
+                sel_treearea.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_treearea);
+            var sel_treearea = document.getElementById('div_treearea');
+            noUiSlider.create(sel_treearea, {
+                connect: true,
+                start: [511, 16074],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 511,
+                max: 16074
+                }
+            });
+            sel_treearea.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_treearea = document.getElementById('val_treearea');
+            val_treearea.innerHTML = values.join(' - ');
+            $.ajax({
+    url: "http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:trees&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetTrees_1Json",
+    dataType: "jsonp",
+});
+setTimeout(function(){
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Trees_1"){
+        filterFunc(lyr)
+        }
+    });
+}, 50);
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_farmfielda = document.createElement("div");
+            div_farmfielda.id = "div_farmfielda";
+            div_farmfielda.className = "slider";
+            document.getElementById("menu").appendChild(div_farmfielda);
+            var lab_farmfielda = document.createElement('div');
+            lab_farmfielda.innerHTML  = 'Filter by farm field area: <span id="val_farmfielda"></span>';
+            lab_farmfielda.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_farmfielda);
+            var reset_farmfielda = document.createElement('div');
+            reset_farmfielda.innerHTML = 'clear filter';
+            reset_farmfielda.className = 'filterlabel';
+            reset_farmfielda.style["cursor"] = 'pointer';
+
+            lab_farmfielda.className = 'filterlabel';
+            reset_farmfielda.onclick = function() {
+                sel_farmfielda.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_farmfielda);
+            var sel_farmfielda = document.getElementById('div_farmfielda');
+            noUiSlider.create(sel_farmfielda, {
+                connect: true,
+                start: [822, 34971],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 822,
+                max: 34971
+                }
+            });
+            sel_farmfielda.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_farmfielda = document.getElementById('val_farmfielda');
+            val_farmfielda.innerHTML = values.join(' - ');
+            $.ajax({
+    url: "http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:farmfields&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetFarmfields_6Json",
+    dataType: "jsonp",
+});
+setTimeout(function(){
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Farmfields_6"){
+        filterFunc(lyr)
+        }
+    });
+}, 50);});
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_residencen = document.createElement('div');
+            div_residencen.id = "div_residencen";
+            div_residencen.className= "filterselect";
+            document.getElementById("menu").appendChild(div_residencen);
+            sel_residencen = document.createElement('select');
+            sel_residencen.multiple = true;
+            sel_residencen.size = 10;
+            sel_residencen.id = "sel_residencen";
+            var residencen_options_str;
+            sel_residencen.onchange = function(){ 
+                $.ajax({
+    url: "http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:residences&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetResidences_3Json",
+    dataType: "jsonp",
+});
+setTimeout(function(){
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Residences_3"){
+        filterFunc(lyr)
+        }
+    });
+}, 50);};       
+
+setTimeout(function () {
+    let found = false;
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Residences_3" && found != true){
+            found = true;
+            if (found){
+                    for (i = 0; i < Object.entries(lyr["_layers"]).length; i++){
+                residencen_options_str += '<option value="' +Object.entries(lyr["_layers"])[i][1].feature.properties.residencen + '">' + Object.entries(lyr["_layers"])[i][1].feature.properties.residencen+ '</option>';
+        }}}
+        sel_residencen.innerHTML = residencen_options_str;
+
+})}, 50);
+
+            div_residencen.appendChild(sel_residencen);
+            var lab_residencen = document.createElement('div');
+            lab_residencen.innerHTML = 'Filter by residence name';
+            lab_residencen.className = 'filterlabel';
+            div_residencen.appendChild(lab_residencen);
+            var reset_residencen = document.createElement('div');
+            reset_residencen.innerHTML = 'clear filter';
+            reset_residencen.className = 'filterlabel';
+            reset_residencen.style["cursor"] = 'pointer';
+            reset_residencen.onclick = function() {
+                var options = document.getElementById("sel_residencen").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                $.ajax({
+    url: "http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:residences&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetResidences_3Json",
+    dataType: "jsonp",
+});
+setTimeout(function(){
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Residences_3"){
+        filterFunc(lyr)
+        }
+    });
+}, 50);
+            };
+            div_residencen.appendChild(reset_residencen);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_lakename = document.createElement('div');
+            div_lakename.id = "div_lakename";
+            div_lakename.className= "filterselect";
+            document.getElementById("menu").appendChild(div_lakename);
+            sel_lakename = document.createElement('select');
+            sel_lakename.multiple = true;
+            sel_lakename.size = 10;
+            sel_lakename.id = "sel_lakename";
+            var lakename_options_str;
+            sel_lakename.onchange = function(){
+                $.ajax({
+    url: "http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:lakes&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetLakes_5Json",
+    dataType: "jsonp",
+});
+setTimeout(function(){
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Lakes_5"){
+        filterFunc(lyr)
+        }
+    });
+}, 50);};
+setTimeout(function () {
+    let found = false;
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Lakes_5" && found != true){
+            found = true;
+            if (found){
+                    for (i = 0; i < Object.entries(lyr["_layers"]).length; i++){
+                lakename_options_str += '<option value="' +Object.entries(lyr["_layers"])[i][1].feature.properties.lakename + '">' + Object.entries(lyr["_layers"])[i][1].feature.properties.lakename+ '</option>';
+        }}}
+        sel_lakename.innerHTML = lakename_options_str;
+
+})}, 50);
+            div_lakename.appendChild(sel_lakename);
+            var lab_lakename = document.createElement('div');
+            lab_lakename.innerHTML = 'Filter by lake name';
+            lab_lakename.className = 'filterlabel';
+            div_lakename.appendChild(lab_lakename);
+            var reset_lakename = document.createElement('div');
+            reset_lakename.innerHTML = 'clear filter';
+            reset_lakename.className = 'filterlabel';
+            reset_lakename.style["cursor"] = 'pointer';
+
+            reset_lakename.onclick = function() {
+                var options = document.getElementById("sel_lakename").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                $.ajax({
+    url: "http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:lakes&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetLakes_5Json",
+    dataType: "jsonp",
+});
+setTimeout(function(){
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Lakes_5"){
+        filterFunc(lyr)
+        }
+    });
+}, 50);;
+            };
+            div_lakename.appendChild(reset_lakename);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_postcode = document.createElement('div');
+            div_postcode.id = "div_postcode";
+            div_postcode.className= "filterselect";
+            document.getElementById("menu").appendChild(div_postcode);
+            sel_postcode = document.createElement('select');
+            sel_postcode.multiple = true;
+            sel_postcode.size = 3;
+            sel_postcode.id = "sel_postcode";
+            var postcode_options_str = "<option value='' unselected></option>";
+            sel_postcode.onchange = function(){
+                $.ajax({
+    url: "http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:residences&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetResidences_3Json",
+    dataType: "jsonp",
+});
+setTimeout(function(){
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Residences_3"){
+        filterFunc(lyr)
+        }
+    });
+}, 50);};
+            postcode_options_str  += '<option value="55022">55022</option>';
+            postcode_options_str  += '<option value="55023">55023</option>';
+            postcode_options_str  += '<option value="55024">55024</option>';
+            sel_postcode.innerHTML = postcode_options_str;
+            div_postcode.appendChild(sel_postcode);
+            var lab_postcode = document.createElement('div');
+            lab_postcode.innerHTML = 'Filter by postal code';
+            lab_postcode.className = 'filterlabel';
+            div_postcode.appendChild(lab_postcode);
+            var reset_postcode = document.createElement('div');
+            reset_postcode.innerHTML = 'clear filter';
+			reset_postcode.style["cursor"] = 'pointer';
+            reset_postcode.className = 'filterlabel';
+            reset_postcode.onclick = function() {
+                var options = document.getElementById("sel_postcode").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                $.ajax({
+    url: "http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:residences&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetResidences_3Json",
+    dataType: "jsonp",
+});
+setTimeout(function(){
+    map.eachLayer(function(lyr){
+        if (lyr["options"]["dataVar"] === "json_Residences_3"){
+        filterFunc(lyr)
+        }
+    });
+}, 50);
+            };
+            div_postcode.appendChild(reset_postcode);
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        resetLabels([layer_Residences_3,layer_Lakes_5,layer_Roads_2]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_5,layer_Roads_2]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_5,layer_Roads_2]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Residences_3,layer_Lakes_5,layer_Roads_2]);
+        });
+        </script>
+        <script src='http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:trees&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetTrees_1Json'></script>
+        <script src='http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:roadsmerged&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetRoads_2Json'></script>
+        <script src='http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:residences&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetResidences_3Json'></script>
+        <script src='http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:postboxes&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetPostboxes_4Json'></script>
+        <script src='http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:lakes&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetLakes_5Json'></script>
+        <script src='http://localhost:8080/geoserver/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=Task5:farmfields&SRSNAME=EPSG:4326&outputFormat=text%2Fjavascript&format_options=callback%3AgetFarmfields_6Json'></script>
+    </body>
+</html>

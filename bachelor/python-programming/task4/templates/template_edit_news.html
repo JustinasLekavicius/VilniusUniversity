@@ -1,0 +1,74 @@
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<style type="text/css">
+    body, html {
+        height: 100%;
+    }
+
+    .bg {
+        filter: blur(16px);
+        -webkit-filter: blur(16px);
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .container-fluid {
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        color: white;
+        font-weight: bold;
+        border: 3px solid #f1f1f1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: 80%;
+        padding: 20px;
+        text-align: left;
+    }
+</style>
+<div class="bg" style="background-image: url('{{movie[7]}}')"></div>
+
+<div class="container-fluid">
+	    {% for item in data %}
+
+<form action="/home">
+
+                        <input type="submit" class="btn btn-primary" value="Back to main page">
+                                </form>
+	<div class="row">
+		<div class="col-md-12">
+			<h3> Editing a news article</h3>
+			<p>
+                Please edit the details below if you wish to change the data of the news article.</p>
+			<form action="/editnews/{{item[0]}}" method="POST">
+				<div class="form-group">
+
+					<label for="newsTitle">
+						News article title
+					</label>
+					<input type="text" style="width: 800px" class="form-control" id="newsTitle" name="newsTitle" value="{{item[1]}}" required />
+				</div>
+                <div class="form-group">
+
+					<label for="newsDescription">
+						News article description (or text)
+					</label>
+					<textarea type="text" style="width: 800px; height: 400px" class="form-control" id="newsDescription" name="newsDescription" required>{{item[2]}}</textarea>
+				</div>
+                <div class="form-group">
+
+					<label for="newsLink">(optional) Link for the news article.</label>
+					<input type="text" class="form-control" id="newsLink" name="newsLink" value="{{item[3]}}"/>
+				</div>
+				<input type="submit" class="btn btn-success" value="Add news article to the database">
+			</form>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<div class="bg" style="background-image: url('{{movie[7]}}')"></div>
+
+<div class="container-fluid">
+<h1 style="text-align: center;">Forumcinemas.lt data web app</h1>
+
+<h2>How to use:</h2>
+<p>Press any of the buttons below to access the different functions.</p>
+<ol>
+    <li>
+        <form action="/addmovie">
+            <input type="submit" class="btn btn-success" style="margin-bottom: 15px; margin-top: 15px" value="Add a movie">
+        </form>
+    </li>
+    <li>
+        <form action="/addnews">
+            <input type="submit" class="btn btn-success" style="margin-bottom: 15px; margin-top: 15px" value="Add a news article">
+        </form>
+    </li>
+
+    <li>
+        <form action="/movies">
+            <input type="submit" class="btn btn-info" style="margin-bottom: 15px; margin-top: 15px" value="List all existing movies in the database">
+        </form>
+    </li>
+    <li>
+        <form action="/news">
+            <input type="submit" class="btn btn-info" style="margin-bottom: 15px; margin-top: 15px" value="List all existing news articles in the database">
+        </form>
+    </li>
+
+    <li>
+        <form action="/search" method="POST" role="search">
+            <input class="form-control " type="text" name="search_input" style="margin-bottom: 15px; margin-top: 15px; width: 450px;"
+                   placeholder="Search for news or movies... (press ENTER to search)">
+        </form>
+    </li>
+</ol>
+        <h5 style="text-align: center;">Created by Justinas Lekavičius, 2019</h5>
+
+</div>
+<style type="text/css">
+    body, html {
+        height: 100%;
+    }
+
+    .bg {
+        filter: blur(16px);
+        -webkit-filter: blur(16px);
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .container-fluid {
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        color: white;
+        font-weight: bold;
+        border: 3px solid #f1f1f1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: 80%;
+        padding: 20px;
+        text-align: left;
+    }
+</style>
+{% endblock %}

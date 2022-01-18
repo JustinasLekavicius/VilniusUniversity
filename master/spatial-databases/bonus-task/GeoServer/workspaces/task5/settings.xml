@@ -1,0 +1,49 @@
+<settings>
+  <id>SettingsInfoImpl--5a34e290:17df6542867:-7fb8</id>
+  <workspace>
+    <id>WorkspaceInfoImpl--5a34e290:17df6542867:-7fba</id>
+    <name>task5</name>
+    <isolated>false</isolated>
+    <dateCreated>2021-12-26 10:45:39.248 UTC</dateCreated>
+    <dateModified>2021-12-26 10:45:46.756 UTC</dateModified>
+  </workspace>
+  <contact>
+    <id>contact</id>
+    <addressCity>Alexandria</addressCity>
+    <addressCountry>Egypt</addressCountry>
+    <addressType>Work</addressType>
+    <contactEmail>claudius.ptolomaeus@gmail.com</contactEmail>
+    <contactOrganization>The Ancient Geographers</contactOrganization>
+    <contactPerson>Claudius Ptolomaeus</contactPerson>
+    <contactPosition>Chief Geographer</contactPosition>
+    <internationalAddress class="org.geotools.util.GrowableInternationalString"/>
+    <internationalAddressCity class="org.geotools.util.GrowableInternationalString"/>
+    <internationalAddressCountry class="org.geotools.util.GrowableInternationalString"/>
+    <internationalAddressDeliveryPoint class="org.geotools.util.GrowableInternationalString"/>
+    <internationalAddressPostalCode class="org.geotools.util.GrowableInternationalString"/>
+    <internationalAddressState class="org.geotools.util.GrowableInternationalString"/>
+    <internationalAddressType class="org.geotools.util.GrowableInternationalString"/>
+    <internationalContactEmail class="org.geotools.util.GrowableInternationalString"/>
+    <internationalContactFacsimile class="org.geotools.util.GrowableInternationalString"/>
+    <internationalContactOrganization class="org.geotools.util.GrowableInternationalString"/>
+    <internationalContactPerson class="org.geotools.util.GrowableInternationalString"/>
+    <internationalContactPosition class="org.geotools.util.GrowableInternationalString"/>
+    <internationalContactVoice class="org.geotools.util.GrowableInternationalString"/>
+  </contact>
+  <charset>UTF-8</charset>
+  <numDecimals>8</numDecimals>
+  <onlineResource>http://geoserver.org</onlineResource>
+  <verbose>false</verbose>
+  <verboseExceptions>false</verboseExceptions>
+  <metadata>
+    <map>
+      <entry>
+        <string>quietOnNotFound</string>
+        <boolean>false</boolean>
+      </entry>
+    </map>
+  </metadata>
+  <localWorkspaceIncludesPrefix>false</localWorkspaceIncludesPrefix>
+  <showCreatedTimeColumnsInAdminList>false</showCreatedTimeColumnsInAdminList>
+  <showModifiedTimeColumnsInAdminList>false</showModifiedTimeColumnsInAdminList>
+</settings>

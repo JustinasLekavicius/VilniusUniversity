@@ -1,0 +1,43 @@
+<featureType>
+  <id>FeatureTypeInfoImpl--5a34e290:17df6542867:-7eff</id>
+  <name>postboxes</name>
+  <nativeName>postboxes</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl--5a34e290:17df6542867:-7fb9</id>
+  </namespace>
+  <title>postboxes</title>
+  <keywords>
+    <string>features</string>
+    <string>postboxes</string>
+  </keywords>
+  <srs>EPSG:4326</srs>
+  <nativeBoundingBox>
+    <minx>54.4475212097168</minx>
+    <maxx>54.455284118652344</maxx>
+    <miny>24.04414176940918</miny>
+    <maxy>24.04861831665039</maxy>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>54.4475212097168</minx>
+    <maxx>54.455284118652344</maxx>
+    <miny>24.04414176940918</miny>
+    <maxy>24.04861831665039</maxy>
+    <crs>EPSG:4326</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--5a34e290:17df6542867:-7f88</id>
+  </store>
+  <serviceConfiguration>false</serviceConfiguration>
+  <simpleConversionEnabled>false</simpleConversionEnabled>
+  <internationalTitle/>
+  <internationalAbstract/>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+  <padWithZeros>false</padWithZeros>
+  <forcedDecimal>false</forcedDecimal>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <skipNumberMatched>false</skipNumberMatched>
+  <circularArcPresent>false</circularArcPresent>
+</featureType>

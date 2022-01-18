@@ -1,0 +1,94 @@
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<style type="text/css">
+    body, html {
+        height: 100%;
+    }
+
+    .bg {
+        filter: blur(16px);
+        -webkit-filter: blur(16px);
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .container-fluid {
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        color: white;
+        font-weight: bold;
+        border: 3px solid #f1f1f1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: 80%;
+        padding: 20px;
+        text-align: left;
+    }
+</style>
+{% for item in data %}
+<div class="bg" style="background-image: url('{{item[7]}}')"></div>
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-md-2">
+            <img alt="Missing image" src={{item[7]}} style="width: 220px; height: 315px;"/>
+        </div>
+        <div class="col-md-10">
+            <h3> {{item[1]}}</h3>
+            <h3>
+                {{item[2]}}
+            </h3>
+            <dl>
+                <dt>
+                    Director:
+                </dt>
+                <dd> {{item[3]}}
+                </dd>
+                <dt>
+                    Age rating:
+                </dt>
+                <dd> {{item[4]}}</dd>
+                <dt>Movie duration:</dt>
+                <dd>{{item[5]}}</dd>
+                <dt>In 3D:</dt>
+                {% if item[6] == 0 %}
+                <dd>No</dd>
+                {% endif %}
+                {% if item[6] == 1 %}
+                <dd>Yes</dd>
+                {% endif %}
+            </dl>
+            <div class="row">
+                <div class="col-md-5">
+
+                    <form action="/movies">
+                        <input type="submit" class="btn btn-primary" value="Back to movie list">
+                    </form>
+                </div>
+                <div class="col-md-4">
+                    <form action="/editmovie/{{item[0]}}">
+
+                    <button type="submit" class="btn btn-info btn-lg">
+                        Edit information for the movie
+                    </button>
+                    </form>
+                </div>
+                <div class="col-md-3">
+                    <form action="/movies" method="POST">
+
+                        <button type="submit" class="btn btn-danger btn-lg" name="delete" value="{{item[0]}}">Delete movie from the database</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
