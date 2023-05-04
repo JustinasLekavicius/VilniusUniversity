@@ -3,7 +3,7 @@
 ## [0.2.0] - 2023-05-04
   
 ### Added
-- Added Deep Learning Laboratory Task 1.
+- Added Deep Learning Laboratory Task 1 (master).
 
 ## [0.1.0] - 2022-01-18
   
