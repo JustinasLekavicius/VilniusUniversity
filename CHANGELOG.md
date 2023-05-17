@@ -1,4 +1,8 @@
 # Changelog
+## [0.3.0] - 2023-05-17
+  
+### Added
+- Added Deep Learning Laboratory Task 2 (master).
 
 ## [0.2.1] - 2023-05-11
   
