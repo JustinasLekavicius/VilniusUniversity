@@ -1,4 +1,9 @@
 # Changelog
+
+## [0.4.0] - 2023-09-26
+  
+### Added
+- Added more material from Signal Analysis and Processing, Nonlinear Modelling Methods, Multidimensional Data Visualisation and Data Analysis subjects (master).
 ## [0.3.0] - 2023-05-17
   
 ### Added
